@@ -24,7 +24,7 @@ const scopes = [
   'https://www.googleapis.com/auth/calendar',
   'https://www.googleapis.com/auth/calendar.acls'
 ];
-app.get('/schedules', (req, res) => {
+app.get('/scheduless', (req, res) => {
 async function main () {
   const url = await oauth2Client.generateAuthUrl({
     access_type: 'offline',
@@ -40,14 +40,16 @@ res.redirect(307 ,url) //307 temp ... 301 permananet
   main().catch(console.error);
 })
 
-app.get("/redirect",(req, res) => {
-  const updatingrefresh=(async function gettingToken (){
+app.get("/redirect",async(req, res) => {
+  // const updatingrefresh=(
+  // async function gettingToken (){
     const {code}=(req.query)
     const {tokens} =await oauth2Client.getToken(code)
     console.log("withour accesstokens ",tokens)
-    const updatingrefresh=await oauth2Client.setCredentials(tokens)
-    return await updatingrefresh
-  })()
+    await oauth2Client.setCredentials(tokens)
+    // return await updatingrefresh
+  // }
+  // )()
   
   // const accesstokens=await oauth2Client.getAccessToken()
   // const refersh =await oauth2Client.refreshAccessToken()
@@ -79,13 +81,13 @@ app.get("/redirect",(req, res) => {
   //getting refresh token implement(as of now using acces token)
     //setting events
   // function callback(oauth2Client){
-    const calendar=google.calendar({version:'v3',auth:updatingrefresh})
+    const calendar=google.calendar({version:'v3',auth:oauth2Client})
     let event={
       summary:"youth india asignment",// title 
       location:"TN", 
       description:"backend project youth india", //description
-      start:{dateTime:1670387400000},//10am
-      end:{dateTime:1670391000000},//11am
+      start:{dateTime:'2022-12-07T04:30:00.000Z'},//10am
+      end:{dateTime:'2022-12-07T05:30:00.000Z'},//11am
       timeZone:'Asia/Kolkata',
       colorId:3,
       attendees:[{"email":"shanthoshravi01@gmail.com"},{"email":"drsanthosh1997@gmail.com"}],//emails
@@ -113,7 +115,8 @@ app.get("/redirect",(req, res) => {
       // const eventArr=freebusyResult.data.calendars.primary.busy
       // if(eventArr.length==0){
           // console.log("here wauit from if part,,,,,,,")
-    calendar.events.insert({  auth: updatingrefresh,calendarId:'primary',conferenceDataVersion: 1,resource:event},(err,eventData)=>{
+   
+          calendar.events.insert({  auth:oauth2Client,calendarId:'primary',conferenceDataVersion: 1,resource:event},(err,eventData)=>{
       if(err){
         res.send(`Error while creating calendar`)
         console.log(err)
