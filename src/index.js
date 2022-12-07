@@ -25,19 +25,19 @@ res.redirect(307 ,url) //307 temp ... 301 permananet
   main().catch(console.error);
 })
 
-app.get("/rest/v1/calendar/redirect ",async(req, res) => {
-
+app.get("/rest/v1/calendar/redirect",async(req, res) => {
+  try{
     const {code}=(req.query) //hard_coded event
     const {tokens} =await oauth2Client.getToken(code)
-    console.log("withour accesstokens ",tokens)
+    // console.log("withour accesstokens ",tokens)
     await oauth2Client.setCredentials(tokens)
     const calendar=google.calendar({version:'v3',auth:oauth2Client})
     let event={
-      summary:"youth india asignment",
+      summary:"youth india asignment 2",
       location:"TN", 
       description:"backend project youth india",
-      start:{dateTime:'2022-12-07T04:30:00.000Z'},//10am
-      end:{dateTime:'2022-12-07T05:30:00.000Z'},//11am
+      start:{dateTime:'2022-12-07T06:30:00.000Z'},//11am
+      end:{dateTime:'2022-12-07T07:30:00.000Z'},//12pm
       timeZone:'Asia/Kolkata',
       colorId:3,
       attendees:[{"email":"shanthoshravi01@gmail.com"},{"email":"drsanthosh1997@gmail.com"}],//emails
@@ -61,6 +61,9 @@ app.get("/rest/v1/calendar/redirect ",async(req, res) => {
         res.send(`event data is added`)
       }
     })
+  }catch(err){
+    res.send(`some error in server ==>  ${err}`)
+  }
     
 })
 app.listen(port, () => {
