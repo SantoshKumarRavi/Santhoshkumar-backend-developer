@@ -1,1 +1,0 @@
-4/0AfgeXvusD_XdIzYvRxIq_80sagBKttmcEj6A8Vn3VYJKHaR1uRpknFqEbECAkbm_8P5ZwQ&scope=https%3A//www.googleapis.com/auth/calendar+https%3A//www.googleapis.com/auth/calendar.acls
