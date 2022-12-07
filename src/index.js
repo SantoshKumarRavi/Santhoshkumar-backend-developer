@@ -29,7 +29,6 @@ app.get("/rest/v1/calendar/redirect",async(req, res) => {
   try{
     const {code}=(req.query) //hard_coded event
     const {tokens} =await oauth2Client.getToken(code)
-    // console.log("withour accesstokens ",tokens)
     await oauth2Client.setCredentials(tokens)
     const calendar=google.calendar({version:'v3',auth:oauth2Client})
     let event={
