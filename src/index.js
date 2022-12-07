@@ -3,13 +3,18 @@ const app = express()
 const port = 8081
 const {google} = require('googleapis');
 // const fs = require('fs').promises;
-const OAuth2 = google.auth.OAuth2;
+var {OAuth2Client} = require('google-auth-library');
+// var auth = new googleAuth();
+// console.log(googleAuth)
+// const OAuth2 = auth.OAuth2;//chaning library 
+
+// const OAuth2 = google.auth.OAuth2;
 require("dotenv").config()
 const {authenticate} = require('@google-cloud/local-auth');
 // const path = require('path');
 // const process = require('process');
 // const CREDENTIALS_PATH = path.join(process.cwd(), "src/credential.json");
-const oauth2Client = new OAuth2(
+const oauth2Client = new OAuth2Client(
   process.env.CLIENTID,
   process.env.CLIENTSECRET,
   process.env.REDIRECTURL
@@ -40,10 +45,7 @@ app.get("/redirect",(req, res) => {
     const {code}=(req.query)
     const {tokens} =await oauth2Client.getToken(code)
     console.log("withour accesstokens ",tokens)
-    const updatingrefresh=await oauth2Client.setCredentials({
-      refresh_token:tokens.refresh_token
-    }
-    )
+    const updatingrefresh=await oauth2Client.setCredentials(tokens)
     return await updatingrefresh
   })()
   
@@ -111,7 +113,7 @@ app.get("/redirect",(req, res) => {
       // const eventArr=freebusyResult.data.calendars.primary.busy
       // if(eventArr.length==0){
           // console.log("here wauit from if part,,,,,,,")
-    calendar.events.insert({  auth: oauth2Client,calendarId:'primary',conferenceDataVersion: 1,resource:event},(err,eventData)=>{
+    calendar.events.insert({  auth: updatingrefresh,calendarId:'primary',conferenceDataVersion: 1,resource:event},(err,eventData)=>{
       if(err){
         res.send(`Error while creating calendar`)
         console.log(err)
